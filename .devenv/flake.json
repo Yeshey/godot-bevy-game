@@ -1,1 +1,0 @@
-{"nixpkgs":{"url":"github:nixos/nixpkgs/nixpkgs-unstable"},"nixpkgs-emscripten":{"url":"github:nixos/nixpkgs/e255a9090e25aed2486f9fb00e5d645fb342d654"},"rust-overlay":{"url":"github:oxalica/rust-overlay","inputs":{"nixpkgs":{"follows":"nixpkgs"}}},"tracy":{"url":"github:allyourcodebase/tracy/2ffcfc74dd24e77113fb07b3044a3fb2f5c2c325"}}
