@@ -8,5 +8,10 @@ crate-type = ["cdylib"]
 
 [dependencies]
 godot-bevy = "0.10.0"
-bevy = { version = "0.17", default-features = false }
+bevy = { version = "0.17", default-features = false, features = [
+    "bevy_asset",
+    "bevy_log",
+    "bevy_state",   # ← was missing, needed for States/OnEnter/in_state
+] }
+bevy_asset_loader = "0.24"
 godot = "0.4"
