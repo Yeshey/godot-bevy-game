@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="bevy_app_singleton"
-run/main_scene="uid://c74sm44xfgvii"
+run/main_scene="uid://c6jpye0vx5xba"
 config/features=PackedStringArray("4.5", "Mobile")
 config/icon="res://icon.svg"
 
