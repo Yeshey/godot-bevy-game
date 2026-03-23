@@ -2,6 +2,8 @@
 .godot/
 /android/
 
+rust/.cargo/config.toml
+
 target/
 target-threaded/
 .DS_Store

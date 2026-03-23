@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy::state::app::StatesPlugin;
 use bevy_asset_loader::prelude::*;
+use godot::classes::Input;
 use godot_bevy::prelude::{
     godot_prelude::{ExtensionLibrary, gdextension},
     *,
@@ -8,7 +9,8 @@ use godot_bevy::prelude::{
 use godot_bevy::plugins::core::PhysicsDelta;
 
 #[bevy_app]
-fn build_app(app: &mut App) {
+#[no_mangle]
+fn android_main(app: &mut App) {
     app.add_plugins(GodotDefaultPlugins)
         .add_plugins(StatesPlugin)
         .init_state::<GameState>()
@@ -53,23 +55,24 @@ fn spawn_player(mut commands: Commands, assets: Res<PlayerAssets>) {
 fn move_player(
     mut query: Query<(&Player, &mut Transform)>,
     physics_delta: Res<PhysicsDelta>,
-    input: Res<ButtonInput<KeyCode>>,  // ← Bevy's input, bridged by godot-bevy
+    mut godot: GodotAccess,
 ) {
     let Ok((player, mut transform)) = query.single_mut() else {
         return;
     };
 
-    let mut direction = Vec2::ZERO;
+    let input = godot.singleton::<Input>();
+    let mut velocity = godot::builtin::Vector2::ZERO;
 
-    if input.pressed(KeyCode::ArrowRight) || input.pressed(KeyCode::KeyD) { direction.x += 1.0; }
-    if input.pressed(KeyCode::ArrowLeft)  || input.pressed(KeyCode::KeyA) { direction.x -= 1.0; }
-    if input.pressed(KeyCode::ArrowDown)  || input.pressed(KeyCode::KeyS) { direction.y += 1.0; }
-    if input.pressed(KeyCode::ArrowUp)    || input.pressed(KeyCode::KeyW) { direction.y -= 1.0; }
+    if input.is_action_pressed("ui_right") { velocity.x += 1.0; }
+    if input.is_action_pressed("ui_left")  { velocity.x -= 1.0; }
+    if input.is_action_pressed("ui_down")  { velocity.y += 1.0; }
+    if input.is_action_pressed("ui_up")    { velocity.y -= 1.0; }
 
-    if direction != Vec2::ZERO {
-        direction = direction.normalize();
+    if velocity.length() > 0.0 {
+        velocity = velocity.normalized() * player.speed;
     }
 
-    transform.translation.x += direction.x * player.speed * physics_delta.delta_seconds;
-    transform.translation.y += direction.y * player.speed * physics_delta.delta_seconds;
+    transform.translation.x += velocity.x * physics_delta.delta_seconds;
+    transform.translation.y += velocity.y * physics_delta.delta_seconds;
 }

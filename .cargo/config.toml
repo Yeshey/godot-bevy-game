@@ -1,1 +1,7 @@
-/nix/store/gkpl249fj8dw40m3l2fvs8dbz6b41gcm-cargo-config.toml
+[target.x86_64-unknown-linux-gnu]
+linker = "/nix/store/y8xj70yyzsml4z3aa5gsn9pvpx4za1py-clang-wrapper-21.1.8/bin/clang"
+rustflags = ["-C", "link-arg=-fuse-ld=/nix/store/q2vpbpf8vqzizz6836vlw3n83cjr8bma-mold-unwrapped-wrapper-2.40.4/bin/mold"]
+
+[target.aarch64-linux-android]
+linker = "/nix/store/cvbdkhlqmrmz0rfk2y8p19w7hml64d4d-androidsdk/libexec/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android34-clang"
+ar     = "/nix/store/cvbdkhlqmrmz0rfk2y8p19w7hml64d4d-androidsdk/libexec/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar"

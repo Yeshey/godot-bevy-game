@@ -19,9 +19,14 @@ let
   godot-bin = pkgs.callPackage ./nix/godot-bin.nix { };
   # tracy profiler - version pinned in devenv.yaml
   # On macOS, zig build needs framework search paths from system SDK
-  tracy = inputs.tracy.packages.${system}.default;
+  # tracy = inputs.tracy.packages.${system}.default;
 in
 {
+  android = {
+    enable = true;
+    android-studio.enable = false;
+  };
+  
   # https://devenv.sh/basics/
   # https://devenv.sh/packages/
   packages =
@@ -34,6 +39,7 @@ in
       # dev tools
       sccache # cache rust build artifacts, ref https://github.com/mozilla/sccache
       python3 # for godot type generation script
+      rustup
       rust-toolchain
       rust-nightly # for web builds (-Zbuild-std requires nightly)
       act # run GitHub Actions locally
@@ -71,8 +77,6 @@ in
 
       # faster link times
       mold
-
-
     ];
 
   # speed up rust builds through caching
@@ -81,6 +85,28 @@ in
   # nightly toolchain paths for web builds
   env.CARGO_NIGHTLY = "${rust-nightly}/bin/cargo";
   env.RUSTC_NIGHTLY = "${rust-nightly}/bin/rustc";
+
+  # Add Android env vars for cross-compilation
+  env.CC_aarch64_linux_android  = "$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android34-clang";
+  env.CXX_aarch64_linux_android = "$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android34-clang++";
+  env.AR_aarch64_linux_android  = "$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar";
+
+  enterShell = ''
+    NDK_BIN="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin"
+
+    mkdir -p rust/.cargo
+    cat > rust/.cargo/config.toml << EOF
+  [target.x86_64-unknown-linux-gnu]
+  linker = "${pkgs.clang}/bin/clang"
+  rustflags = ["-C", "link-arg=-fuse-ld=${pkgs.mold}/bin/mold"]
+
+  [target.aarch64-linux-android]
+  linker = "$NDK_BIN/aarch64-linux-android34-clang"
+  ar     = "$NDK_BIN/llvm-ar"
+  EOF
+
+    rustup target add aarch64-linux-android 2>/dev/null || true
+  '';
 
   # devenv scripts - run with `devenv run <script-name>` or just `<script-name>` in devenv shell
   scripts = {
@@ -126,17 +152,4 @@ in
     '';
   };
 
-  files =
-    if pkgs.stdenv.isLinux then
-      # On linux, we get ~5x faster link times using mold
-      # https://bevy.org/learn/quick-start/getting-started/setup/#enable-fast-compiles-optional
-      {
-        ".cargo/config.toml".text = ''
-          [target.x86_64-unknown-linux-gnu]
-          linker = "${pkgs.clang}/bin/clang"
-          rustflags = ["-C", "link-arg=-fuse-ld=${pkgs.mold}/bin/mold"]
-        '';
-      }
-    else
-      { };
 }

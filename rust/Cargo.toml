@@ -7,11 +7,14 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-godot-bevy = "0.10.0"
-bevy = { version = "0.17", default-features = false, features = [
+godot-bevy = "0.11.0"
+bevy = { version = "0.18", default-features = false, features = [
     "bevy_asset",
     "bevy_log",
-    "bevy_state",   # ← was missing, needed for States/OnEnter/in_state
+    "bevy_state",
 ] }
-bevy_asset_loader = "0.24"
+bevy_asset_loader = "0.25"
 godot = "0.4"
+
+[target.'cfg(target_os = "android")'.dependencies]
+android-activity = { version = "0.6", features = ["native-activity"] }
