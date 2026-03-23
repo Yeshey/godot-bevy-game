@@ -1,0 +1,9 @@
+/home/yeshey/PersonalFiles/2026/Projects/Games/godot-bevy-game/.devenv/flake.json
+/home/yeshey/PersonalFiles/2026/Projects/Games/godot-bevy-game/.devenv.flake.nix
+/home/yeshey/PersonalFiles/2026/Projects/Games/godot-bevy-game/.env
+/home/yeshey/PersonalFiles/2026/Projects/Games/godot-bevy-game/devenv.local.nix
+/home/yeshey/PersonalFiles/2026/Projects/Games/godot-bevy-game/devenv.lock
+/home/yeshey/PersonalFiles/2026/Projects/Games/godot-bevy-game/devenv.nix
+/home/yeshey/PersonalFiles/2026/Projects/Games/godot-bevy-game/devenv.yaml
+/home/yeshey/PersonalFiles/2026/Projects/Games/godot-bevy-game/nix/godot-bin.nix
+/home/yeshey/PersonalFiles/2026/Projects/Games/godot-bevy-game/rust-toolchain.toml
