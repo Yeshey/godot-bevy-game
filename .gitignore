@@ -115,7 +115,6 @@ gen-external-apklibs
 
 ### direnv ###
 .direnv
-.envrc
 
 ### Godot ###
 # Godot 4+ specific ignores
